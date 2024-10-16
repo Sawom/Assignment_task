@@ -72,7 +72,7 @@ const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
           </button>
 
           {/* navigate to book details page */}
-          <button onClick={handleView} className="btn btn-ghost" > See Details </button>
+          <button onClick={handleView} className="btn btn-ghost" > <span className="text-blue-500"> See Details </span>  </button>
 
         </div>
       </div>
