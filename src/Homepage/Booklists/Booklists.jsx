@@ -7,12 +7,13 @@ const Booklists = () => {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-
-  const [filteredBooks, setFilteredBooks] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState("");
   const [subjects, setSubjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 10;
+  const [totalBooks, setTotalBooks] = useState(0);
 
-  // load wishlist and search books and selected genre from local-storage
+  // Load wishlist, search term, and selected genre from localStorage
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     const storedSearchTerm = localStorage.getItem("searchTerm") || "";
@@ -23,19 +24,23 @@ const Booklists = () => {
     setSelectedGenre(storedGenre);
   }, []);
 
-  // fetch data with axios
+  // Fetch all books and extract subjects for dropdown
   useEffect(() => {
-    axios.get(`https://gutendex.com/books/`)
-      .then((response) => {
+    const fetchBooks = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get("https://gutendex.com/books/");
         setBooks(response.data.results);
-        // console.log(response.data.results);
         extractSubjects(response.data.results);
+        setTotalBooks(response.data.count); // Set total books count
         setLoading(false);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
-      });
+      }
+    };
+
+    fetchBooks();
   }, []);
 
   // Extract subjects from book data for dropdown
@@ -47,32 +52,14 @@ const Booklists = () => {
     setSubjects([...allSubjects]);
   };
 
-  // Update the filtered books list based on the search term and selected genre
-  useEffect(() => {
-    let filtered = books;
+  // Filter books based on search term and selected genre
+  const filteredBooks = books.filter((book) => {
+    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesGenre = selectedGenre ? book.subjects.includes(selectedGenre) : true;
+    return matchesSearch && matchesGenre;
+  });
 
-    // Filter by title if searchTerm is present
-    if (searchTerm) {
-      filtered = filtered.filter((book) =>
-        book.title.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    // Filter by genre if selectedGenre is present
-    if (selectedGenre) {
-      filtered = filtered.filter(
-        (book) => book.subjects && book.subjects.includes(selectedGenre)
-      );
-    }
-
-    setFilteredBooks(filtered);
-
-    // Save search term and selected genre in the localStorage
-    localStorage.setItem("searchTerm", searchTerm);
-    localStorage.setItem("selectedGenre", selectedGenre);
-  }, [searchTerm, selectedGenre, books]);
-
-  // toggle book in wishlist
+  // Manage wishlist state
   const toggleWishlist = (book) => {
     const isWishlisted = wishlist.some(
       (wishlistedBook) => wishlistedBook.id === book.id
@@ -91,26 +78,47 @@ const Booklists = () => {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
-  // handle input search
+  // Handle input change for the search bar
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
+    setCurrentPage(1); // Reset to first page on search
+    localStorage.setItem("searchTerm", event.target.value);
   };
 
+  // Handle genre selection change
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
+    setCurrentPage(1); // Reset to first page on genre change
+    localStorage.setItem("selectedGenre", event.target.value);
+  };
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
+
+  const currentBooks = filteredBooks.slice((currentPage - 1) * booksPerPage, currentPage * booksPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage((prevPage) => prevPage - 1);
+    }
   };
 
   return (
     <div className="container mx-auto">
-      {/* search bar */}
-      <div className="my-5 flex justify-center">
+      {/* Search Bar */}
+      <div className="my-5">
         <input
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
           placeholder="Search books by title..."
-          className="input input-bordered "
-          style={{ width: "80%" }}
+          className="input input-bordered w-full"
         />
       </div>
 
@@ -130,11 +138,13 @@ const Booklists = () => {
         </select>
       </div>
 
+      {/* Display Books */}
+      <p className="font-bold" > Total books: {books.length} </p>
       <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-5 my-10">
         {loading ? (
           <p>Loading...</p>
-        ) : filteredBooks.length > 0 ? (
-          filteredBooks.map((bookData) => (
+        ) : currentBooks.length > 0 ? (
+          currentBooks.map((bookData) => (
             <BooksCard
               bookData={bookData}
               key={bookData.id}
@@ -149,6 +159,24 @@ const Booklists = () => {
         )}
       </div>
 
+      {/* Pagination Controls */}
+      <div className="flex justify-center my-5">
+        <button
+          onClick={handlePrevPage}
+          disabled={currentPage === 1}
+          className="btn bg-green-600 text-white mx-2"
+        >
+          Previous
+        </button>
+        <span className="mx-2">Page {currentPage} of {totalPages}</span>
+        <button
+          onClick={handleNextPage}
+          disabled={currentPage === totalPages}
+          className="btn bg-green-600 text-white mx-2"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 };
