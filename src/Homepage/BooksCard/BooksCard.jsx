@@ -53,9 +53,9 @@ const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
           </div>
 
           {/* Wishlist Icon */}
-        <button onClick={() => toggleWishlist(bookData)} className="btn btn-ghost">
-          {isWishlisted ? <FaHeart  className="text-3xl" /> : <FaRegHeart className="text-3xl" />}
-        </button>
+          <button onClick={() => toggleWishlist(bookData)} className="btn btn-ghost">
+            {isWishlisted ? <FaHeart  className="text-3xl text-green-700" /> : <FaRegHeart className="text-3xl" />}
+          </button>
 
         </div>
       </div>
