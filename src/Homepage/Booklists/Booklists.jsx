@@ -1,3 +1,5 @@
+import Aos from "aos";
+import "aos/dist/aos.css";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import BooksCard from "../BooksCard/BooksCard";
@@ -7,13 +9,19 @@ const Booklists = () => {
   const [loading, setLoading] = useState(true);
   const [wishlist, setWishlist] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+
   const [selectedGenre, setSelectedGenre] = useState("");
   const [subjects, setSubjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const booksPerPage = 10;
   const [totalBooks, setTotalBooks] = useState(0);
 
-  // Load wishlist, search term, and selected genre from localStorage
+  // animation
+  useEffect(() => {
+    Aos.init({ duration: 2000 });
+  }, []);
+
+  // load wishlist, search term, and selected genre from localStorage
   useEffect(() => {
     const storedWishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     const storedSearchTerm = localStorage.getItem("searchTerm") || "";
@@ -24,7 +32,7 @@ const Booklists = () => {
     setSelectedGenre(storedGenre);
   }, []);
 
-  // Fetch all books and extract subjects for dropdown
+  // fetch all books and extract subjects/genre for dropdown
   useEffect(() => {
     const fetchBooks = async () => {
       setLoading(true);
@@ -52,14 +60,18 @@ const Booklists = () => {
     setSubjects([...allSubjects]);
   };
 
-  // Filter books based on search term and selected genre
+  // filter books based on search term and selected genre
   const filteredBooks = books.filter((book) => {
-    const matchesSearch = book.title.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesGenre = selectedGenre ? book.subjects.includes(selectedGenre) : true;
+    const matchesSearch = book.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesGenre = selectedGenre
+      ? book.subjects.includes(selectedGenre)
+      : true;
     return matchesSearch && matchesGenre;
   });
 
-  // Manage wishlist state
+  // manage wishlist state
   const toggleWishlist = (book) => {
     const isWishlisted = wishlist.some(
       (wishlistedBook) => wishlistedBook.id === book.id
@@ -78,24 +90,27 @@ const Booklists = () => {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
-  // Handle input change for the search bar
+  // handle input change for the search bar
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Reset to first page on search
     localStorage.setItem("searchTerm", event.target.value);
   };
 
-  // Handle genre selection change
+  // handle genre selection change
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
     setCurrentPage(1); // Reset to first page on genre change
     localStorage.setItem("selectedGenre", event.target.value);
   };
 
-  // Pagination logic
+  // pagination
   const totalPages = Math.ceil(filteredBooks.length / booksPerPage);
 
-  const currentBooks = filteredBooks.slice((currentPage - 1) * booksPerPage, currentPage * booksPerPage);
+  const currentBooks = filteredBooks.slice(
+    (currentPage - 1) * booksPerPage,
+    currentPage * booksPerPage
+  );
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -111,9 +126,10 @@ const Booklists = () => {
 
   return (
     <div className="container mx-auto">
-      {/* Search Bar */}
+      {/* search bar */}
       <div className="my-5">
         <input
+          data-aos="fade-down"
           type="text"
           value={searchTerm}
           onChange={handleSearchChange}
@@ -122,8 +138,8 @@ const Booklists = () => {
         />
       </div>
 
-      {/* Genre Dropdown Filter */}
-      <div className="my-5">
+      {/* genre dropdown filter */}
+      <div data-aos="fade-down" className="my-5">
         <select
           value={selectedGenre}
           onChange={handleGenreChange}
@@ -139,13 +155,16 @@ const Booklists = () => {
       </div>
 
       {/* Display Books */}
-      <p className="font-bold" > Total books: {books.length} </p>
-      <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-5 my-10">
+      <p data-aos="fade-down" className="font-bold"> Total books: {books.length} </p>
+      <div
+        data-aos="fade-down"
+        className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-5 my-10"
+      >
         {loading ? (
           <p>Loading...</p>
         ) : currentBooks.length > 0 ? (
           currentBooks.map((bookData) => (
-            <BooksCard
+            <BooksCard 
               bookData={bookData}
               key={bookData.id}
               isWishlisted={wishlist.some(
@@ -168,7 +187,9 @@ const Booklists = () => {
         >
           Previous
         </button>
-        <span className="mx-2">Page {currentPage} of {totalPages}</span>
+        <span className="mx-2">
+          Page {currentPage} of {totalPages}
+        </span>
         <button
           onClick={handleNextPage}
           disabled={currentPage === totalPages}

@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 const WishlistPage = () => {
   const [wishlist, setWishlist] = useState([]);
@@ -9,13 +11,19 @@ const WishlistPage = () => {
     setWishlist(storedWishlist);
   }, []);
 
+  // animation
+  useEffect(() => {
+    Aos.init({ duration: 2000 });
+  }, []);
+
   return (
     <div className="container mx-auto">
       <h1 className="text-2xl font-bold my-5">My Wishlist</h1>
       <div className="grid lg:grid-cols-4 md:grid-cols-3 grid-cols-1 gap-5 my-10">
         {wishlist.length > 0 ? (
           wishlist.map((bookData) => (
-            <div
+            <div  
+              data-aos="fade-down"
               key={bookData.id}
               className="card card-compact bg-base-100 w-full h-full shadow-xl"
             >

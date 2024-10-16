@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
   const { title, id, authors, subjects, formats } = bookData;
@@ -15,9 +17,14 @@ const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
     navigate(url);
   };
 
+  // animation
+  useEffect(() => {
+    Aos.init({ duration: 2000 });
+  }, []);
+
   return (
     <div>
-      <div className="card card-compact bg-base-100 w-full h-full shadow-xl">
+      <div data-aos="fade-down" className="card card-compact bg-base-100 w-full h-full shadow-xl">
         {/* cover img */}
         <figure>
           <img src={imageUrl} alt="books" />
