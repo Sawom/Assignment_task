@@ -15,8 +15,7 @@ const Booklists = () => {
 
   // fetch data with axios
   useEffect(() => {
-    axios
-      .get(`https://gutendex.com/books/`)
+    axios.get(`https://gutendex.com/books/`)
       .then((response) => {
         setBooks(response.data.results);
         console.log(response.data.results);
@@ -24,7 +23,6 @@ const Booklists = () => {
       })
       .catch((error) => {
         console.error("Error fetching data:", error);
-        setError("Failed to fetch books");
         setLoading(false);
       });
   }, []);
@@ -59,7 +57,7 @@ const Booklists = () => {
             isWishlisted={wishlist.some(
               (wishlistedBook) => wishlistedBook.id === bookData.id
             )}
-            
+
             toggleWishlist={toggleWishlist}
           ></BooksCard>
         ))}

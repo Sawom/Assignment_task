@@ -1,12 +1,19 @@
 import React from "react";
-import { FaRegHeart } from "react-icons/fa";
-import { FaHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
   const { title, id, authors, subjects, formats } = bookData;
 
   // Access the cover image URL
   const imageUrl = formats["image/jpeg"];
+
+  // book details route
+  let navigate = useNavigate();
+  const url = `/bookinfo/${id}`;
+  const handleView = () => {
+    navigate(url);
+  };
 
   return (
     <div>
@@ -18,10 +25,10 @@ const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
         <div className="card-body">
           {/* book id */}
           <h2 className="card-title">Book ID: {id} </h2>
-          
+
           {/* book title */}
           <h2 className="card-title">Title: {title} </h2>
-          
+
           {/* author name */}
           <div>
             <p className="font-bold">Author(s):</p>
@@ -53,9 +60,19 @@ const BooksCard = ({ bookData, isWishlisted, toggleWishlist }) => {
           </div>
 
           {/* Wishlist Icon */}
-          <button onClick={() => toggleWishlist(bookData)} className="btn btn-ghost">
-            {isWishlisted ? <FaHeart  className="text-3xl text-green-700" /> : <FaRegHeart className="text-3xl" />}
+          <button
+            onClick={() => toggleWishlist(bookData)}
+            className="btn btn-ghost mb-2"
+          >
+            {isWishlisted ? (
+              <FaHeart className="text-3xl text-green-700" />
+            ) : (
+              <FaRegHeart className="text-3xl" />
+            )}
           </button>
+
+          {/* navigate to book details page */}
+          <button onClick={handleView} className="btn btn-ghost" > See Details </button>
 
         </div>
       </div>
