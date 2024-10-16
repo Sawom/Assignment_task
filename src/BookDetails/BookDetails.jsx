@@ -33,7 +33,7 @@ const BookDetails = () => {
   return (
     <div className="container mx-auto mt-5">
       {/* 1 general info,img */}
-      <div className="grid lg:grid-cols-2 md:grid-cols-2 grid-cols-1 w-full shadow-2xl p-2 gap-4">
+      <div className="grid lg:grid-cols-2 mb-8 md:grid-cols-2 grid-cols-1 w-full shadow-xl p-5 gap-4">
         {/* 1st column */}
         <div>
           <figure>
@@ -62,9 +62,54 @@ const BookDetails = () => {
               ))}
             </ol>
           </div>
+          {/* Genre (subjects) */}
+          <div>
+            <p className="font-bold">Genre(s):</p>
+
+            <ul className="list-disc ml-5">
+              {subjects?.map((subject, index) => (
+                <li key={index}>{subject}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
+
       {/* 2 others info*/}
+      <div className="mb-10 p-5">
+        <p className="text-xl font-bold">More Informations:</p>
+        <div className="mt-5">
+          {/* media type */}
+          <p>
+            <strong>Media Type:</strong> {media_type}
+          </p>
+          {/* download count */}
+          <p>
+            <strong>Download Count:</strong> {download_count}
+          </p>
+
+          {/* Bookshelves */}
+          <div className="mt-4">
+            <strong className="  mb-2">Bookshelves:</strong>
+            <ul className="list-decimal ml-5">
+              {bookshelves?.map((shelf, index) => (
+                <li key={index}>{shelf}</li>
+              ))}
+            </ul>
+          </div>
+
+          {/* languages */}
+          <div className="mt-2">
+            <strong>Language(s):</strong>
+            <ul className="list-decimal ml-5">
+              {languages?.map((lang, index) => (
+                <li key={index}>{lang}</li>
+              ))}
+            </ul>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 };
