@@ -179,7 +179,7 @@ const Booklists = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div className="flex justify-center my-5">
+      <div data-aos="fade-down" className="flex justify-center my-5">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
