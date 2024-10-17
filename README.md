@@ -9,3 +9,4 @@
 <br>
 4. To improve the user experience, I used localStorage to save the user's search and filter preferences, ensuring that their settings persist even after the page is refreshed. This project allowed me to combine several features to create an intuitive and interactive book browsing experience.
 <br>
+Live site: https://fanciful-pastelito-2f163e.netlify.app/
