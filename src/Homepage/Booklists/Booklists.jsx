@@ -90,14 +90,14 @@ const Booklists = () => {
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
-  // handle input change for the search bar
+  // handle input for the search bar
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
     setCurrentPage(1); // Reset to first page on search
     localStorage.setItem("searchTerm", event.target.value);
   };
 
-  // handle genre selection change
+  // handle genre selection
   const handleGenreChange = (event) => {
     setSelectedGenre(event.target.value);
     setCurrentPage(1); // Reset to first page on genre change
@@ -125,7 +125,7 @@ const Booklists = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto p-2">
       {/* search bar */}
       <div className="my-5">
         <input
@@ -179,7 +179,7 @@ const Booklists = () => {
       </div>
 
       {/* Pagination Controls */}
-      <div data-aos="fade-down" className="flex justify-center my-5">
+      <div className="flex justify-center my-5">
         <button
           onClick={handlePrevPage}
           disabled={currentPage === 1}
